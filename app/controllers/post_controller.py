@@ -51,6 +51,7 @@ def update_post(id):
 
     updated_post.update_post(id)
     
+    print(Post.checking_id_exist(id))
     if (Post.checking_id_exist(id) == None):
         raise FileNotFoundError
     

@@ -16,6 +16,7 @@ def post_route(app):
         except FileNotFoundError:
             return {"msg": "The post don't exist"}, 404
 
+
     @app.post("/posts")
     def create_post():
 
