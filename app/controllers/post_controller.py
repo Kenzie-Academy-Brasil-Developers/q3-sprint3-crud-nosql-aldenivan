@@ -1,5 +1,3 @@
-from http.client import CREATED
-from turtle import pos
 from app.models.post_model import Post
 from flask import jsonify, request
 from http import HTTPStatus
@@ -43,10 +41,8 @@ def delete_post(id):
 def update_post(id):
 
     data = request.get_json()
-    post = Post(**data)
+    update = Post(**data)
 
-    post.update_post(id)
+    update.update_post(id)
     
-    Post.serialize_post(post)
-
-    return jsonify(post.__dict__), HTTPStatus.OK
+    return jsonify(update.__dict__), HTTPStatus.OK

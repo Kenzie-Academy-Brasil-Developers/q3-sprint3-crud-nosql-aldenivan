@@ -1,4 +1,3 @@
-from operator import pos
 from app.controllers import post_controller
 
 def post_route(app):
@@ -20,11 +19,9 @@ def post_route(app):
 
     @app.delete("/posts/<int:id>")
     def delete_post(id):
-
         return post_controller.delete_post(id)    
 
 
     @app.patch("/posts/<int:id>")
     def update_post(id):
-
         return post_controller.update_post(id)

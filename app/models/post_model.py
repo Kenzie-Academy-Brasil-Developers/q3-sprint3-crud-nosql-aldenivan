@@ -1,5 +1,7 @@
-from turtle import pos
 import pymongo
+from bson.objectid import ObjectId
+from app.services.posts_services import creating_id
+
 
 client = pymongo.MongoClient("mongodb://localhost:27017")
 
@@ -7,21 +9,32 @@ db = client["kenzie"]
 
 
 class Post:
+
     def __init__(self, **kwargs) -> None:
         self.author = kwargs["author"]
         self.content = kwargs["content"]
         self.tags = kwargs["tags"]
         self.title = kwargs["title"]
-
+        self.created_at = {}
+        self.updated_at = {}
 
     def post_posts(self):
+        self.id = creating_id(list(db.posts.find()))
+        self.created_at["create_day"] = (ObjectId().generation_time.today())
+        self.updated_at = {"last_update": (ObjectId().generation_time.today())}
         db.posts.insert_one(self.__dict__)
 
     def update_post(self, post_id):
         
-        updated_post = db.posts.find_one_and_update({"id": post_id}, {"$inc": {"content": self.content}})
+        update_author = self.__dict__["author"]
+        update_content = self.__dict__["content"]
+        update_tags = self.__dict__["tags"]
+        update_title = self.__dict__["title"]
+        update_time = self.updated_at = {"last_update": (ObjectId().generation_time.today())}
 
-        return updated_post
+        update_post = db.posts.update_one({"id": post_id}, {"$set": {"author": update_author, "content": update_content, "tags": update_tags, "title": update_title, "updated_at": update_time}})
+
+        return update_post
 
     @staticmethod
     def get_all():
@@ -29,7 +42,6 @@ class Post:
         post_list = db.posts.find()
 
         return post_list
-
 
     @staticmethod
     def get_one(post_id):
@@ -41,40 +53,16 @@ class Post:
     @staticmethod
     def serialize_post(data):
 
-        post_id = 0
-        length_list = len(list(db.posts.find()))
-        
         if type(data) is list:
             for post in data:
-                post.update({"_id": str(post["_id"])})
-                
-                if post.get("id") == None:
-                    
-                    if( length_list > post_id):
-                        db.posts.update_one({"_id": post["_id"]}, {"$inc": {"id": (length_list)}})
-                        post_id = length_list
-
-                    else:
-                        post_id += 1   
-                        db.posts.update_one({"_id": post["_id"]}, {"$inc": {"id": (post_id)}})
-
+                post.pop("_id")
 
         elif type(data) is Post:
+            
             data._id = str(data._id)
-
-            if( length_list > post_id):
-                data.id = len(list(db.posts.find()))
-                post_id = data.id
-        
-            else:
-                post_id += 1
-                data.id = post_id
-
-
+           
         elif type(data) is dict:
-            data.update({"_id": str(data["_id"])})
-            print(data)
-
+            data.pop("_id")
 
     @staticmethod
     def delete_post(post_id):
