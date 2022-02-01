@@ -16,12 +16,11 @@ def retrieve_one(id):
     get_post = Post.get_one(id)
     Post.serialize_post(get_post)
 
-    try:
-        return jsonify(get_post), HTTPStatus.OK
+    if(get_post == None):
+        raise FileNotFoundError
 
-    except ValueError:
-        return {"msg": "The post don't exist"}, HTTPStatus.NOT_FOUND
-
+    return jsonify(get_post), HTTPStatus.OK
+    
 
 def create_post():
 
@@ -32,23 +31,18 @@ def create_post():
 
     Post.serialize_post(post)
 
-    try:
-        return jsonify(post.__dict__), HTTPStatus.CREATED
-
-    except AttributeError:
-        return {"msg": "Attributes are incorrect"}, HTTPStatus.BAD_REQUEST
+    return jsonify(post.__dict__), 201
 
 
 def delete_post(id):
     deleted_post = Post.delete_post(id)
     Post.serialize_post(deleted_post)
+  
+    if(deleted_post == None):
+        raise FileNotFoundError
 
-    try:
-        return jsonify(deleted_post), HTTPStatus.OK
-    
-    except ValueError:
-        return {"msg": "The post don't exist"}, HTTPStatus.NOT_FOUND
-
+    return jsonify(deleted_post), HTTPStatus.OK
+   
 
 def update_post(id):
 
@@ -57,11 +51,5 @@ def update_post(id):
 
     update.update_post(id)
     
-    try:
-        return jsonify(update.__dict__), HTTPStatus.OK
+    return jsonify(update.__dict__), HTTPStatus.OK
 
-    except AttributeError:
-        return {"msg": "Attributes are incorrect"}, HTTPStatus.BAD_REQUEST
-
-    except ValueError:
-        return {"msg": "The post don't exist"}, HTTPStatus.NOT_FOUND
