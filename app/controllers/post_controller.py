@@ -47,9 +47,12 @@ def delete_post(id):
 def update_post(id):
 
     data = request.get_json()
-    update = Post(**data)
+    updated_post = Post(**data)
 
-    update.update_post(id)
+    updated_post.update_post(id)
     
-    return jsonify(update.__dict__), HTTPStatus.OK
+    if (Post.checking_id_exist(id) == None):
+        raise FileNotFoundError
+    
+    return jsonify(updated_post.__dict__), HTTPStatus.OK
 

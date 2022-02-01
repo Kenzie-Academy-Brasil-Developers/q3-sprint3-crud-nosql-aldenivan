@@ -12,3 +12,4 @@ def creating_id(list_posts: list):
     else: 
         return length_list
 
+

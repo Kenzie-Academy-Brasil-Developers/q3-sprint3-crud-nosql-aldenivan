@@ -1,3 +1,4 @@
+from tabnanny import check
 import pymongo
 from bson.objectid import ObjectId
 from app.services.posts_services import creating_id
@@ -71,4 +72,7 @@ class Post:
 
         return deleted_post
 
-    
+    @staticmethod
+    def checking_id_exist(id):
+
+        check = db.post.find_one({"id": id})
