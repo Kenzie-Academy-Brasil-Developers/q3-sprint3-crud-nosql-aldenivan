@@ -16,7 +16,11 @@ def retrieve_one(id):
     get_post = Post.get_one(id)
     Post.serialize_post(get_post)
 
-    return jsonify(get_post), HTTPStatus.OK
+    try:
+        return jsonify(get_post), HTTPStatus.OK
+
+    except ValueError:
+        return {"msg": "The post don't exist"}, HTTPStatus.NOT_FOUND
 
 
 def create_post():
@@ -28,14 +32,22 @@ def create_post():
 
     Post.serialize_post(post)
 
-    return jsonify(post.__dict__), HTTPStatus.CREATED
+    try:
+        return jsonify(post.__dict__), HTTPStatus.CREATED
+
+    except AttributeError:
+        return {"msg": "Attributes are incorrect"}, HTTPStatus.BAD_REQUEST
 
 
 def delete_post(id):
     deleted_post = Post.delete_post(id)
     Post.serialize_post(deleted_post)
 
-    return jsonify(deleted_post), HTTPStatus.OK
+    try:
+        return jsonify(deleted_post), HTTPStatus.OK
+    
+    except ValueError:
+        return {"msg": "The post don't exist"}, HTTPStatus.NOT_FOUND
 
 
 def update_post(id):
@@ -45,4 +57,11 @@ def update_post(id):
 
     update.update_post(id)
     
-    return jsonify(update.__dict__), HTTPStatus.OK
+    try:
+        return jsonify(update.__dict__), HTTPStatus.OK
+
+    except AttributeError:
+        return {"msg": "Attributes are incorrect"}, HTTPStatus.BAD_REQUEST
+
+    except ValueError:
+        return {"msg": "The post don't exist"}, HTTPStatus.NOT_FOUND

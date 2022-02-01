@@ -8,9 +8,9 @@ def post_route(app):
 
 
     @app.get("/posts/<int:id>")
-    def read_post_by_id(id):
+    def read_post_by_id(id):    
         return post_controller.retrieve_one(id)    
-
+    
 
     @app.post("/posts")
     def create_post():
